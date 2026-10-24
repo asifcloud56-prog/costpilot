@@ -1,0 +1,11 @@
+opencost:
+  prometheus:
+    internal:
+      enabled: true
+      serviceName: monitoring-kube-prometheus-prometheus
+      namespaceName: monitoring
+      port: 9090
+  ui:
+    enabled: true
+  # Local kind cluster mein cloud pricing nahi hoti, default pricing use hogi.
+  # Cloud (AWS/GCP/Azure) par chalao to apna pricing config yahan add karna.

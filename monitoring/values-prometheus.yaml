@@ -1,0 +1,14 @@
+grafana:
+  adminPassword: admin   # sirf local learning ke liye, real jagah par badlo
+  defaultDashboardsTimezone: Asia/Karachi
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    # ServiceMonitors ko sab namespaces se pick karo
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi

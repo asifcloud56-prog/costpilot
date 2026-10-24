@@ -1,0 +1,29 @@
+# Kyverno policy: har container ke liye resource requests aur memory limit zaroori.
+# Pehle Kyverno install karo:
+#   helm repo add kyverno https://kyverno.github.io/kyverno/
+#   helm install kyverno kyverno/kyverno -n kyverno --create-namespace
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-resource-requests-limits
+spec:
+  validationFailureAction: Audit   # shuru mein Audit, jab confident ho to Enforce
+  background: true
+  rules:
+    - name: check-resources
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["demo"]
+      validate:
+        message: "CPU/memory requests aur memory limit lazmi hain."
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    cpu: "?*"
+                    memory: "?*"
+                  limits:
+                    memory: "?*"
