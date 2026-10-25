@@ -7,5 +7,5 @@ opencost:
       port: 9090
   ui:
     enabled: true
-  # Local kind cluster mein cloud pricing nahi hoti, default pricing use hogi.
-  # Cloud (AWS/GCP/Azure) par chalao to apna pricing config yahan add karna.
+  # A local kind cluster has no cloud pricing, so OpenCost uses its default pricing.
+  # On AWS/GCP/Azure, add your pricing configuration here.

@@ -64,7 +64,8 @@ cluster/      kind cluster config and setup script
 monitoring/   Helm values and install script (Prometheus, Grafana, OpenCost)
 apps/         demo application and Kubernetes manifests
 loadtest/     k6 load test script
-analysis/     right-sizing report (Python)
+analysis/     right-sizing report, apply and compare scripts (Python)
+results/      before/after measurements
 policies/     Kyverno policy (audit mode)
 docs/         roadmap and notes
 .github/      CI workflow (build and image scan)
@@ -104,12 +105,27 @@ Clean up with `make clean`.
 
 > The default Grafana password (`admin`) is for local learning only. Do not use these values on a shared or public cluster.
 
+## Before/after validation
+
+The key question is whether the recommendations are safe: do requests drop while performance stays the same? The workflow below answers it (run `make prometheus` in a second terminal for step 3).
+
+```bash
+make reset-app     # 1. deploy the original, oversized requests
+make load-before   # 2. load test + snapshot of requests
+make analyze       # 3. right-sizing report
+make apply         # 4. apply the recommended requests and wait for the rollout
+make load-after    # 5. same load test again
+make compare       # 6. before/after table -> results/comparison.md
+```
+
+Results are written to `results/comparison.md`.
+
 ## Roadmap
 
 - [x] Local cluster with Prometheus, Grafana and OpenCost
 - [x] Demo workload and k6 load test
 - [x] Right-sizing report (v0.1)
-- [ ] Before/after validation: apply recommendations, re-run the load test, compare requests, p95 latency and error rate
+- [x] Before/after validation tooling (`make apply`, `make compare`); first real run pending
 - [ ] Pull-request cost bot (GitHub Action that comments the estimated cost impact of a change)
 - [ ] Policy guardrails with Kyverno (audit mode, then enforce)
 - [ ] Automatic shutdown of idle environments

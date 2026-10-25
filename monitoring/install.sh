@@ -9,7 +9,7 @@ helm repo update
 
 kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 
-# Prometheus + Grafana + Alertmanager. Release name "monitoring" hai.
+# Prometheus + Grafana + Alertmanager. The Helm release is named "monitoring".
 helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
   --values "$HERE/values-prometheus.yaml"
@@ -20,4 +20,4 @@ helm upgrade --install opencost opencost/opencost \
   --values "$HERE/values-opencost.yaml"
 
 echo
-echo "Done. Pods check karo: kubectl -n monitoring get pods"
+echo "Done. Check the pods with: kubectl -n monitoring get pods"

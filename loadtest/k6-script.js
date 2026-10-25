@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// Thora load: ramp up, hold, ramp down. Isse real jaisa usage pattern banta hai.
+// Gentle load: ramp up, hold, ramp down. This produces a realistic usage pattern.
 export const options = {
   stages: [
     { duration: '1m', target: 5 },

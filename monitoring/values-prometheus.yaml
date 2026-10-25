@@ -1,11 +1,11 @@
 grafana:
-  adminPassword: admin   # sirf local learning ke liye, real jagah par badlo
+  adminPassword: admin   # local learning only, change for any real environment
   defaultDashboardsTimezone: Asia/Karachi
 
 prometheus:
   prometheusSpec:
     retention: 15d
-    # ServiceMonitors ko sab namespaces se pick karo
+    # pick up ServiceMonitors and PodMonitors from all namespaces
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     resources:

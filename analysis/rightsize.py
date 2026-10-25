@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""CostPilot rightsizing report (v0.1).
+"""CostPilot right-sizing report (v0.1).
 
-Prometheus se har container ka actual CPU/memory usage nikalta hai,
-requests se compare karta hai, aur recommendation deta hai.
+Reads the actual CPU/memory usage of every container from Prometheus,
+compares it with the requested resources and prints a recommendation.
 
-Pehle terminal mein chalao:  make prometheus
-Phir:                        python3 analysis/rightsize.py --namespace demo
+In one terminal run:  make prometheus
+Then:                 python3 analysis/rightsize.py --namespace demo
 """
 import argparse
 import sys
@@ -13,7 +13,7 @@ import sys
 import pandas as pd
 import requests
 
-HEADROOM = 1.3  # p95 usage par 30% safety margin
+HEADROOM = 1.3  # 30% safety margin on top of p95 usage
 
 
 def query(prom_url: str, promql: str) -> pd.DataFrame:
@@ -36,7 +36,7 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--prometheus", default="http://localhost:9090")
     p.add_argument("--namespace", default="demo")
-    p.add_argument("--window", default="1h", help="kitne time ka data dekhna hai, jaise 1h, 1d, 7d")
+    p.add_argument("--window", default="1h", help="how much history to analyse, e.g. 1h, 1d, 7d")
     args = p.parse_args()
 
     ns, w = args.namespace, args.window
@@ -51,8 +51,8 @@ def main() -> int:
     try:
         frames = {k: query(args.prometheus, q).rename(columns={"value": k}) for k, q in queries.items()}
     except requests.RequestException as e:
-        print(f"Prometheus se connect nahi hua ({args.prometheus}): {e}")
-        print("Pehle 'make prometheus' chalao.")
+        print(f"Could not connect to Prometheus ({args.prometheus}): {e}")
+        print("Run 'make prometheus' in another terminal first.")
         return 1
 
     df = None
@@ -62,7 +62,7 @@ def main() -> int:
         df = f if df is None else df.merge(f, on=["pod", "container"], how="outer")
 
     if df is None or df.empty:
-        print("Koi data nahi mila. App deploy karo aur load test chalao, phir dobara try karo.")
+        print("No data found. Deploy the app, run the load test, then try again.")
         return 1
 
     df = df.fillna(0)
