@@ -3,7 +3,7 @@
 **Open-source, cost-aware DevOps tooling for Kubernetes.**
 CostPilot finds over-provisioned workloads, recommends right-sized resource requests, and (on the roadmap) brings cost feedback directly into the pull-request workflow.
 
-> **Status: work in progress.** The data pipeline and the right-sizing report are working. Validation, the pull-request cost bot and policy guardrails are in development. See the [roadmap](#roadmap).
+> **Status: work in progress.** The data pipeline, right-sizing report and before/after validation work (first result below). The pull-request cost bot and policy guardrails are in development. See the [roadmap](#roadmap).
 
 ---
 
@@ -71,7 +71,7 @@ No pod restarts or OOM kills occurred during the "after" run. Full table: [`resu
 
 ## Tech stack
 
-Kubernetes (kind), Docker, Helm, Prometheus, Grafana, OpenCost, Python (pandas, requests), k6, Kyverno, GitHub Actions, Trivy.
+Kubernetes (kind), Docker, Helm, Prometheus, Grafana, OpenCost, Python (pandas, requests), k6, Kyverno (policy file only, not deployed yet), GitHub Actions, Trivy.
 
 ## Repository layout
 
