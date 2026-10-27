@@ -20,22 +20,38 @@ CostPilot's goal is to shorten that loop: measure real usage, compare it with wh
 
 ## What it does today
 
-1. **Collects data:** Prometheus (metrics), Grafana (dashboards) and OpenCost (cost allocation) run on a local multi-node Kubernetes cluster.
+1. **Collects data:** Prometheus and kube-state-metrics run on a local Kubernetes (kind) cluster. A low-memory profile runs on an 8 GB laptop; Grafana and OpenCost are optional.
 2. **Generates load:** a demo service plus a k6 load test produce realistic usage patterns.
 3. **Recommends right-sizing:** a Python script reads p95 CPU and memory usage from Prometheus, adds a 30% safety margin and compares it against the requested resources.
+4. **Validates the change:** it applies the recommendation, repeats the load test and produces a before/after table.
 
 ## First result (controlled test)
 
-The demo app was deliberately deployed with large requests (1 CPU, 1 GiB memory per pod) to validate that the pipeline detects waste. After a 7-minute k6 load test:
+The demo app was deliberately deployed with oversized requests (0.4 CPU, 512 MiB memory per pod, 2 pods) to check that the pipeline detects waste and that applying its recommendation is safe. The same 7-minute k6 load test (up to 20 virtual users) ran before and after.
+
+**Step 1: detection.** Observed p95 usage plus a 30% safety margin versus what was requested:
 
 | Resource (per pod) | Requested | Recommended | Waste |
 |---|---|---|---|
-| CPU | 1.0 core | ~0.12 core | ~88% |
-| Memory | 1024 MiB | ~65 MiB | ~94% |
+| CPU | 0.40 core | ~0.19 core | ~51-54% |
+| Memory | 512 MiB | ~63-70 MiB | ~86-88% |
 
-Load test: 4,272 requests, 0% failed, p95 latency 51 ms.
+**Step 2: validation.** Recommendations applied (200m CPU, 80 MiB memory), then the same load test repeated:
 
-> **Note:** this is a controlled experiment on a test cluster with intentionally oversized requests. It shows the detection pipeline works. It is not a claim about savings in a real production environment. Validation on real and public workloads is on the roadmap.
+| Metric | Before | After | Change |
+|---|---|---|---|
+| CPU requests per pod | 0.40 | 0.20 | -50% |
+| Memory requests per pod (MiB) | 512 | 80 | -84% |
+| Latency avg (ms) | 33.9 | 38.6 | +14% |
+| Latency p95 (ms) | 84.4 | 102.0 | +21% |
+| Failed requests | 0.00% | 0.00% | none |
+| Requests served | 4,239 | 4,218 | similar |
+
+No pod restarts or OOM kills occurred during the "after" run. Full table: [`results/comparison.md`](results/comparison.md).
+
+**What this shows:** reserved memory dropped 84% and CPU 50% with no failed requests, at the cost of a small p95 latency increase that stays far below the 500 ms threshold. Part of that increase may come from the lower CPU limit (1 core to 0.8 core); this has not been isolated yet.
+
+> **Note:** this is a controlled experiment on a single-node test cluster with intentionally oversized requests, one workload and one run each. It shows the detection and validation pipeline works. It is not a claim about savings in a real production environment. Repeated runs and validation on real and public workloads are on the roadmap.
 
 ## Architecture
 
@@ -104,6 +120,16 @@ make analyze       # prints the right-sizing table and saves analysis/report.csv
 Clean up with `make clean`.
 
 > The default Grafana password (`admin`) is for local learning only. Do not use these values on a shared or public cluster.
+
+## Low-memory profile (8 GB laptops)
+
+The default setup (3 nodes plus Prometheus, Grafana, Alertmanager, node-exporter and OpenCost) needs roughly 5-6 GB of RAM. On an 8 GB machine use the light profile: a single node, with only Prometheus and kube-state-metrics, which is all the right-sizing workflow needs.
+
+```bash
+make cluster-light
+make monitoring-light            # add GRAFANA=true if you want dashboards
+make app
+```
 
 ## Before/after validation
 

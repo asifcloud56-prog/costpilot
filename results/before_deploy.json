@@ -1,0 +1,114 @@
+{
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+        "annotations": {
+            "deployment.kubernetes.io/revision": "2",
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"demo-app\",\"team\":\"platform\"},\"name\":\"demo-app\",\"namespace\":\"demo\"},\"spec\":{\"replicas\":2,\"selector\":{\"matchLabels\":{\"app\":\"demo-app\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"demo-app\",\"team\":\"platform\"}},\"spec\":{\"containers\":[{\"image\":\"costpilot-demo:0.1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"app\",\"ports\":[{\"containerPort\":8000}],\"readinessProbe\":{\"httpGet\":{\"path\":\"/health\",\"port\":8000}},\"resources\":{\"limits\":{\"cpu\":\"1\",\"memory\":\"1Gi\"},\"requests\":{\"cpu\":\"400m\",\"memory\":\"512Mi\"}}}]}}}}\n"
+        },
+        "creationTimestamp": "2026-10-27T11:10:39Z",
+        "generation": 2,
+        "labels": {
+            "app": "demo-app",
+            "team": "platform"
+        },
+        "name": "demo-app",
+        "namespace": "demo",
+        "resourceVersion": "2871",
+        "uid": "0d36dd07-750e-491e-a115-0a7ac96b170e"
+    },
+    "spec": {
+        "progressDeadlineSeconds": 600,
+        "replicas": 2,
+        "revisionHistoryLimit": 10,
+        "selector": {
+            "matchLabels": {
+                "app": "demo-app"
+            }
+        },
+        "strategy": {
+            "rollingUpdate": {
+                "maxSurge": "25%",
+                "maxUnavailable": "25%"
+            },
+            "type": "RollingUpdate"
+        },
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "demo-app",
+                    "team": "platform"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "image": "costpilot-demo:0.1",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "app",
+                        "ports": [
+                            {
+                                "containerPort": 8000,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/health",
+                                "port": 8000,
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "400m",
+                                "memory": "512Mi"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30
+            }
+        }
+    },
+    "status": {
+        "availableReplicas": 2,
+        "conditions": [
+            {
+                "lastTransitionTime": "2026-10-27T11:16:17Z",
+                "lastUpdateTime": "2026-10-27T11:16:17Z",
+                "message": "Deployment has minimum availability.",
+                "reason": "MinimumReplicasAvailable",
+                "status": "True",
+                "type": "Available"
+            },
+            {
+                "lastTransitionTime": "2026-10-27T11:10:39Z",
+                "lastUpdateTime": "2026-10-27T11:16:17Z",
+                "message": "ReplicaSet \"demo-app-76965674b4\" has successfully progressed.",
+                "reason": "NewReplicaSetAvailable",
+                "status": "True",
+                "type": "Progressing"
+            }
+        ],
+        "observedGeneration": 2,
+        "readyReplicas": 2,
+        "replicas": 2,
+        "terminatingReplicas": 0,
+        "updatedReplicas": 2
+    }
+}

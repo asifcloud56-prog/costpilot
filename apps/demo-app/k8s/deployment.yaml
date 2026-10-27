@@ -12,7 +12,12 @@ metadata:
     app: demo-app
     team: platform
 spec:
-  replicas: 3
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: demo-app
@@ -35,11 +40,11 @@ spec:
           # Deliberately oversized requests: this is the "waste" CostPilot should detect.
           resources:
             requests:
+              cpu: "400m"
+              memory: 512Mi
+            limits:
               cpu: "1"
               memory: 1Gi
-            limits:
-              cpu: "2"
-              memory: 2Gi
 ---
 apiVersion: v1
 kind: Service

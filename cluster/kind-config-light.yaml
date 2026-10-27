@@ -1,0 +1,11 @@
+# Low-memory profile (for laptops with 8 GB RAM): a single node.
+# kind automatically allows workloads to run on a single control-plane node.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: costpilot
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 8080
+        protocol: TCP

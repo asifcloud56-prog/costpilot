@@ -1,10 +1,18 @@
-.PHONY: cluster monitoring app load load-before apply load-after compare reset-app analyze grafana prometheus policies clean
+.PHONY: cluster cluster-light monitoring monitoring-light app load load-before apply load-after compare reset-app analyze grafana prometheus policies clean
 
 cluster:
 	bash cluster/setup.sh
 
 monitoring:
 	bash monitoring/install.sh
+
+# Low-memory profile for 8 GB laptops: 1 node, Prometheus + kube-state-metrics only.
+# Add Grafana with: make monitoring-light GRAFANA=true
+cluster-light:
+	bash cluster/setup.sh cluster/kind-config-light.yaml
+
+monitoring-light:
+	GRAFANA=$(GRAFANA) OPENCOST=$(OPENCOST) bash monitoring/install-light.sh
 
 app:
 	docker build -t costpilot-demo:0.1 apps/demo-app

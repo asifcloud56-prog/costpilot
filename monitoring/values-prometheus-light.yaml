@@ -1,0 +1,33 @@
+# Low-memory profile: only what the right-sizing workflow needs
+# (Prometheus, the operator, kube-state-metrics and the kubelet/cAdvisor metrics).
+alertmanager:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+defaultRules:
+  create: false
+
+grafana:
+  enabled: false          # enable with: GRAFANA=true bash monitoring/install-light.sh
+  adminPassword: admin    # local learning only
+  defaultDashboardsTimezone: Asia/Karachi
+
+prometheus:
+  prometheusSpec:
+    retention: 2d
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 400Mi
+      limits:
+        memory: 900Mi
