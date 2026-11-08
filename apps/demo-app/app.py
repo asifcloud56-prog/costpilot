@@ -19,7 +19,7 @@ def health():
 
 @app.get("/work")
 def work():
-    """CPU use karne wala endpoint, load test isi ko hit karega."""
+    """CPU-bound endpoint: the load test hits this one."""
     rounds = int(os.environ.get("WORK_ROUNDS", "20000"))
     data = b"costpilot"
     start = time.time()

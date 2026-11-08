@@ -151,7 +151,7 @@ Results are written to `results/comparison.md`.
 - [x] Local cluster with Prometheus, Grafana and OpenCost
 - [x] Demo workload and k6 load test
 - [x] Right-sizing report (v0.1)
-- [x] Before/after validation tooling (`make apply`, `make compare`); first real run pending
+- [x] Before/after validation tooling (`make apply`, `make compare`); first real run done (see results/comparison.md)
 - [ ] Pull-request cost bot (GitHub Action that comments the estimated cost impact of a change)
 - [ ] Policy guardrails with Kyverno (audit mode, then enforce)
 - [ ] Automatic shutdown of idle environments
