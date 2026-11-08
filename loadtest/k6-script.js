@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// Gentle load: ramp up, hold, ramp down. This produces a realistic usage pattern.
+// Gentle load: 0 to 5 users, then gradually up to 20, then back to 0.
 export const options = {
   stages: [
     { duration: '1m', target: 5 },
