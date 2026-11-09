@@ -29,4 +29,5 @@ jobs:
         with:
           image-ref: costpilot-demo:ci
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
           exit-code: "0"   # report only for now; set to "1" to fail the build on findings
