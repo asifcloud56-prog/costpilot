@@ -31,6 +31,14 @@ spec:
         - name: app
           image: costpilot-demo:0.1
           imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 8000
           readinessProbe:
