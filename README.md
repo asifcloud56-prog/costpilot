@@ -166,6 +166,15 @@ Results are written to `results/comparison.md`.
 - Cost figures from OpenCost use default pricing on the local cluster, not real cloud pricing.
 - Results so far come from a single small demo workload.
 
+## What I learned
+
+- **Requests reserve capacity, even when unused.** My first demo pods asked for 1 CPU each and stayed `Pending` on a small single-node cluster. The scheduler adds up requests, not real usage, so the node looked full while it was mostly idle.
+- **A 3-node cluster did not fit on an 8 GB laptop.** Three kind nodes plus Prometheus, Grafana, Alertmanager and OpenCost used all the memory. Pods crashed and the API server timed out. I switched to one node with only Prometheus and kube-state-metrics, and limited WSL to 4 GB.
+- **Rolling updates need spare capacity.** `make apply` timed out because the new pod could not be scheduled while the old pods still held their requests. Setting `maxSurge: 0` and `maxUnavailable: 1` made Kubernetes remove an old pod first.
+- **Measure before you resize.** p95 usage showed memory requests were about 86-88% too high. After applying the change, the same load test had no failed requests. The cost was a small latency increase (p95 from 84 ms to 102 ms), which I report instead of hiding.
+- **A red CI run is not always my code.** One run failed after a comment-only change. I checked the code locally, re-ran the job, and it passed.
+
+
 ## Contributing
 
 Issues and pull requests are welcome. This is an early-stage learning and portfolio project, so feedback on the approach is especially appreciated.
